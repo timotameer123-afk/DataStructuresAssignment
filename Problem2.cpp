@@ -79,8 +79,12 @@ int main() {
     HeapSort heapSort;
     for (int i = 0; i < n; i++) {
         Patient patient;
-        cin >> patient.id;
+        cout << "Enter patient #" << (i + 1) << " information:" << endl;
+        cout << "Name: ";
         cin >> patient.name;
+        cout << "ID: ";
+        cin >> patient.id;
+        cout << "Severity (1-10): ";
         cin >> patient.severity;
         heapSort.insertPatients(patient);
     }
