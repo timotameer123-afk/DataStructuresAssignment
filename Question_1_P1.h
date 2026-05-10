@@ -1,3 +1,5 @@
+#ifndef QUESTION_1_P1_H
+#define QUESTION_1_P1_H
 #include <iostream>
 #include <string>
 using namespace std;
@@ -7,11 +9,14 @@ struct Book
     int id;
     string title;
     string author;
+    int height;    // used for AVL tree
     Book* left;
     Book* right;
 };
 
 class BST {
+
+
 public:
     Book* root;
     BST(){
@@ -24,6 +29,7 @@ public:
             newNode->id = id;
             newNode->title = title;
             newNode->author = author;
+            newNode->height = 1;
             newNode->left = nullptr;
             newNode->right = nullptr;
             return newNode;
@@ -38,6 +44,16 @@ public:
         return node;
     }
 
+     int getHeight(Book* node) {
+        if (node == nullptr) return 0;
+        return node->height;
+    }
+
+     int getBalance(Book* node) {
+        if (node == nullptr) return 0;
+        return getHeight(node->left) - getHeight(node->right);
+    }
+    
     // LVR (Left, Visit, Right)
     void Inorder(Book* node){
         if(node == nullptr){
@@ -113,7 +129,7 @@ public:
                 node -> left = nullptr;
             }
             else{
-                // Node with two children get the max value in the left subtree 
+                // Node with two children 
                 Book* max = Findmax(node->left);
                 // Copy the max value to the current node
                 node->id = max->id;
@@ -127,36 +143,4 @@ public:
     }
 };
 
-int main() {
-    BST bst;
-    bst.root = bst.Insert(bst.root, 5, "The Lord of the Rings", "J.R.R. Tolkien");
-    bst.root = bst.Insert(bst.root, 2, "To Kill a Mockingbird", "Harper Lee");
-    bst.root = bst.Insert(bst.root, 9, "The Hobbit", "J.R.R. Tolkien");
-    bst.root = bst.Insert(bst.root, 1, "The Great Gatsby", "F. Scott Fitzgerald");
-    bst.root = bst.Insert(bst.root, 6, "The Catcher in the Rye", "J.D. Salinger");
-    bst.root = bst.Insert(bst.root, 4, "Pride and Prejudice", "Jane Austen");
-    bst.root = bst.Insert(bst.root, 3, "1984", "George Orwell");
-    cout << "================================" << endl;
-    cout << "Books in the BST (Inorder Traversal):" << endl;
-    bst.Inorder(bst.root);
-    cout << "================================" << endl;
-    cout << "Enter the ID of the book to search: ";
-    int searchId ; 
-    cin >> searchId ;
-    if ( bst.Search(searchId)){
-        cout << "Book with ID " << searchId << " found in the BST." << endl;
-    }
-    else{
-        cout << "Book with ID " << searchId << " not found in the BST." << endl;
-    }
-    cout << "================================" << endl;
-    cout << "Enter the ID of the book to delete: ";
-    int deleteId ;
-    cin >> deleteId ;
-    bst.root = bst.Delete(bst.root , deleteId);
-    cout << "Books in the BST (Inorder Traversal) after deletion:" << endl;
-    bst.Inorder(bst.root);  
-
-    return 0;
-}
-
+#endif
