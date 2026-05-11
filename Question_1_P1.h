@@ -65,6 +65,21 @@ public:
 
     }
 
+    void Inorder_IDs_between(Book*node , int id1, int id2){
+        if(node == nullptr){
+            return;
+        }
+        if(node->id > id1){
+            Inorder_IDs_between(node->left, id1, id2);
+        }
+        if(node->id >= id1 && node->id <= id2){
+            cout << "ID: " << node->id << ", Title: " << node->title << ", Author: " << node->author << endl;
+        }
+        if(node->id < id2){
+            Inorder_IDs_between(node->right, id1, id2);
+        }
+    }
+
     Book* Search(Book* node , int id){
         if(node == nullptr ){
             return nullptr;
