@@ -92,22 +92,7 @@ class AVLTree : public BST{
         return node; // Return the unchanged node pointer
     }
 
-    // Search function
-    Book* search(Book* node, int id) {
-        if (node == nullptr) {
-            return nullptr;
-        }
-        else if (id == node->id) {
-            return node;
-        }
-        else if (id < node->id) {
-            return search(node->left, id);
-        }
-        else {
-            return search(node->right, id);
-        }
-    }
-
+    
     Book* Findmax(Book* node){
         if ( node == nullptr ){
             return nullptr;
@@ -119,6 +104,102 @@ class AVLTree : public BST{
             return Findmax(node->right);
         }
     }
+
+    // Search function
+    bool search(Book* node, int id) {
+        this->search_steps++; 
+
+        if (node == nullptr) {
+            return false;
+        }
+        else if (id == node->id) {
+            return true;
+        }
+        else if (id < node->id) {
+            return search(node->left, id);
+        }
+        else {
+            return search(node->right, id);
+        }
+    }
+
+    //Inorder Traversal
+    void inorder(Book* node) {
+        if (node == nullptr) return;
+        inorder(node->left);
+        cout << "ID: " << node->id << endl << ", Title: " << node->title << endl<< ", Author: " << node->author << endl;
+        cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<< endl;
+        inorder(node->right);
+    }
+
+    // BFT Traversing + finding closest value
+    Book* breadthFirstTraversal(Book* node, int id, int& closestDiff, Book*& closest) {
+        queue <Book*> q;
+        Book* current = root;
+        if (current != nullptr) {
+            q.push(current);
+            while(!q.empty()){
+                current = q.front();
+                q.pop();
+                this->search_steps++;
+                int diff = abs(current->id - id);
+                if (diff < closestDiff) {
+                    closestDiff = diff;
+                    closest = current;
+                }
+                if (current->left != nullptr) {
+                    q.push(current->left);
+                }
+                if (current->right != nullptr) {
+                    q.push(current->right);
+                }
+            }
+
+        }
+        return current;
+    }
+
+
+    // Another function to find closest value using Inorder Traversal
+    Book* findClosest(Book* node, int target, int& closestDiff, Book*& closest) {
+    if (node == nullptr) return closest;
+
+    this->search_steps++;
+
+    int currentDiff = abs(node->id - target);
+    if (currentDiff < closestDiff) {
+        closestDiff = currentDiff;
+        closest = node;
+    }
+    if (target < node->id)
+        return findClosest(node->left, target, closestDiff, closest);
+    else if (target > node->id)
+        return findClosest(node->right, target, closestDiff, closest);
+    else
+        return node;
+}
+
+    // Function to search for an id between limits in AVL tree
+    void Inorder_IDs_between(Book* node, int id1, int id2) {
+    if (node == nullptr) {
+        return;
+    }
+
+    this->search_steps++; 
+
+    if (node->id > id1) {
+        Inorder_IDs_between(node->left, id1, id2);
+    }
+
+    if (node->id >= id1 && node->id <= id2) {
+        cout << "ID: " << node->id << ", Title: " << node->title 
+             << ", Author: " << node->author << endl;
+    }
+
+    if (node->id < id2) {
+        Inorder_IDs_between(node->right, id1, id2);
+    }}
+
 
     //Deletion function
     Book* deleteNode(Book* node, int id) {
@@ -146,8 +227,8 @@ class AVLTree : public BST{
                 node->title = temp->title;
                 node->author = temp->author;
                 node->right = deleteNode(node->right, temp->id);
-            }
-        }
+            }}
+        
 
         if (node == nullptr) return nullptr;
 
@@ -173,41 +254,6 @@ class AVLTree : public BST{
         return node;
     }
 
-
-    //Inorder Traversal
-    void inorder(Book* node) {
-        if (node == nullptr) return;
-        inorder(node->left);
-        cout << "ID: " << node->id << endl << ", Title: " << node->title << endl<< ", Author: " << node->author << endl;
-        cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<"<< endl;
-        inorder(node->right);
-    }
-
-    // BFT Traversing + finding closest value
-    Book* breadthFirstTraversal(Book* node, int id, int& closestDiff, Book*& closest) {
-        queue <Book*> q;
-        Book* current = root;
-        if (current != nullptr) {
-            q.push(current);
-            while(!q.empty()){
-                current = q.front();
-                q.pop();
-                int diff = abs(current->id - id);
-                if (diff < closestDiff) {
-                    closestDiff = diff;
-                    closest = current;
-                }
-                if (current->left != nullptr) {
-                    q.push(current->left);
-                }
-                if (current->right != nullptr) {
-                    q.push(current->right);
-                }
-            }
-
-        }
-        return current;
-    }
-} ;
+};
 
 #endif

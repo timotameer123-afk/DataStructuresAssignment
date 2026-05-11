@@ -16,11 +16,12 @@ struct Book
 
 class BST {
 
-
 public:
+    int search_steps; 
     Book* root;
     BST(){
         root = nullptr;
+        search_steps = 0;
     }
 
     Book* Insert(Book* node , int id , string title , string author){
@@ -41,6 +42,7 @@ public:
         else{
             node->right = Insert(node->right , id , title , author);
         }
+        node->height = 1 + max(getHeight(node->left), getHeight(node->right));
         return node;
     }
 
@@ -65,7 +67,24 @@ public:
 
     }
 
+    void Inorder_IDs_between(Book*node , int id1, int id2){
+        this->search_steps++;
+        if(node == nullptr){
+            return;
+        }
+        if(node->id > id1){
+            Inorder_IDs_between(node->left, id1, id2);
+        }
+        if(node->id >= id1 && node->id <= id2){
+            cout << "ID: " << node->id << ", Title: " << node->title << ", Author: " << node->author << endl;
+        }
+        if(node->id < id2){
+            Inorder_IDs_between(node->right, id1, id2);
+        }
+    }
+
     Book* Search(Book* node , int id){
+        this->search_steps++;
         if(node == nullptr ){
             return nullptr;
         }
@@ -139,6 +158,7 @@ public:
                 node->left = Delete(node->left , max->id);
             }
         }
+        node->height = 1 + max(getHeight(node->left), getHeight(node->right));
         return node;   // return the pointer to the root of the subtree after deletion
     }
 };
