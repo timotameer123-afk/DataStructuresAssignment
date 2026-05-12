@@ -1,4 +1,6 @@
+#include <algorithm>
 #include <iostream>
+#include <ranges>
 #include <vector>
 
 using namespace std;
@@ -19,10 +21,23 @@ struct Patient {
 };
 
 class HeapSort {
+private:
+    int id = 1;
 public:
     vector<Patient> patients;
 
-    void insertPatients(const Patient& patient) {
+    bool hasHigherPriority(const Patient& a, const Patient& b) const {
+        if (a.severity != b.severity) {
+            return a.severity > b.severity; // Higher severity comes first
+        }
+        if (a.arrivalTime != b.arrivalTime) {
+            return a.arrivalTime < b.arrivalTime; // If severity is equal, earlier arrival time comes first
+        }
+        return a.id < b.id; // If both are equal, smaller ID comes first
+    }
+
+    void insertPatients(Patient& patient) {
+        patient.id = id++;
         this->patients.push_back(patient);
         BuildHeap();
     }
@@ -35,13 +50,13 @@ public:
 
         if (
             left < n &&
-            patients[left].severity > patients[largest].severity
+            hasHigherPriority(patients[left], patients[largest])
             ) {
             largest = left;
         }
         if (
             right < n &&
-            patients[right].severity > patients[largest].severity
+            hasHigherPriority(patients[right], patients[largest])
             ) {
             largest = right;
         }
@@ -66,9 +81,38 @@ public:
         }
     }
 
-    void EmergencyOrder() const {
-        for (const Patient& patient : patients) {
-            cout << patient << endl;
+    void ViewNextPatient() {
+        if (patients.empty()) {
+            cout << "No patients currently in the emergency room." << endl;
+            return;
+        }
+        cout << "Next patient to be treated -> " << patients[0] << endl;
+    }
+
+    void updateSeverity(const int ID, const int severity) {
+        bool foundPatient = false;
+        for (Patient& patient : patients) {
+            if (patient.id == ID) {
+                foundPatient = true;
+                patient.severity = severity;
+            }
+        }
+        if (!foundPatient) {
+            if (this->id > ID) {
+                cout << "The patient with id: " << ID << " was probably treated.\n";
+            }else {
+                cout << "The patient with id: " << ID << " doesn't exist.\n";
+            }
+        } else {
+            BuildHeap(); // Restore the heap structure after modifying a patient's severity
+        }
+    }
+
+    void EmergencyOrder() {
+        sortTheHeap();
+        const int size = static_cast<int>(patients.size() - 1);
+        for (int i = size; i >= 0; i--) {
+            cout << patients[i] << endl;
         }
     }
 };
@@ -82,12 +126,14 @@ int main() {
         cout << "Enter patient #" << (i + 1) << " information:" << endl;
         cout << "Name: ";
         cin >> patient.name;
-        cout << "ID: ";
-        cin >> patient.id;
         cout << "Severity (1-10): ";
         cin >> patient.severity;
+        cout << "Arrival Time: ";
+        cin >> patient.arrivalTime;
         heapSort.insertPatients(patient);
     }
+    heapSort.ViewNextPatient();
+    heapSort.updateSeverity(4, 10);
     heapSort.EmergencyOrder();
     return 0;
 }
