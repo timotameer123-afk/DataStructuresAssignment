@@ -138,25 +138,28 @@ public:
         else{
             // Node with only one child or no child
             if ( node -> left == nullptr && node -> right == nullptr){
-                node = nullptr;
+                delete node ; 
+                return nullptr ;
             }
             else if ( node->left == nullptr && node->right != nullptr){
-                node = node->right;
-                node -> right = nullptr;
+                Book *temp = node->right;
+                delete node;
+                node = temp;
             }
             else if ( node->left != nullptr && node->right == nullptr){
-                node = node->left;
-                node -> left = nullptr;
+                Book *temp = node->left;
+                delete node;
+                node = temp;
             }
             else{
                 // Node with two children 
-                Book* max = Findmax(node->left);
+                Book* max_node = Findmax(node->left);
                 // Copy the max value to the current node
-                node->id = max->id;
-                node->title = max->title;
-                node->author = max->author;
+                node->id = max_node->id;
+                node->title = max_node->title;
+                node->author = max_node->author;
                 // Delete the max value from the original position
-                node->left = Delete(node->left , max->id);
+                node->left = Delete(node->left , max_node->id);
             }
         }
         node->height = 1 + max(getHeight(node->left), getHeight(node->right));
