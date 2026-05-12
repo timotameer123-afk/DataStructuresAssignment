@@ -191,7 +191,7 @@ class AVLTree : public BST{
         Inorder_IDs_between(node->left, id1, id2);
     }
 
-    if (node->id >= id1 && node->id <= id2) {
+    if (node->id > id1 && node->id < id2) {
         cout << "ID: " << node->id << ", Title: " << node->title 
              << ", Author: " << node->author << endl;
     }
@@ -253,7 +253,6 @@ class AVLTree : public BST{
 
         return node;
     }
-
 };
 
 #endif
