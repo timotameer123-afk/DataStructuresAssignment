@@ -11,6 +11,7 @@ using namespace std;
 3. ID (lower is priority)
 */
 
+
 struct Patient {
     int id;
     string name;
